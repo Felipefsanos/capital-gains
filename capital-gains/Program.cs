@@ -2,12 +2,11 @@
 using capital_gains.Services;
 using System.Text.Json;
 
-Console.WriteLine("Entre com as operações ou digite 'EXIT' para sair.");
 string? input = Console.ReadLine();
 
-while (input?.ToLower() != "exit")
+while (input != null)
 {
-    var operacoesFinanceiras = JsonSerializer.Deserialize<IEnumerable<OperacaoMercadoFinanceiro>>(input!);
+    var operacoesFinanceiras = JsonSerializer.Deserialize<IEnumerable<OperacaoMercadoFinanceiro>>(input);
 
     var taxas = new List<TaxaResponseModel>();
     var calculadorService = new CalculadorService();
@@ -32,6 +31,5 @@ while (input?.ToLower() != "exit")
 
     Console.WriteLine(JsonSerializer.Serialize(taxas, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 
-    Console.WriteLine("Entre com as operações ou digite 'EXIT' para sair.");
     input = Console.ReadLine();
 }
