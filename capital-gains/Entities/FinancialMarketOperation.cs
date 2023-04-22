@@ -2,7 +2,7 @@
 
 namespace capital_gains.Entities
 {
-    public class FinancyMarketOperation
+    public class FinancialMarketOperation
     {
         [JsonPropertyName("operation")]
         public string? Operation { get; set; }

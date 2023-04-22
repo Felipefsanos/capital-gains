@@ -17,7 +17,7 @@ namespace capital_gains.Handlers
             _outputService = outputService;
         }
 
-        public void Handle(FinancyMarketOperation marketOperation)
+        public void Handle(FinancialMarketOperation marketOperation)
         {
             switch (marketOperation.Operation)
             {

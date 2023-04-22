@@ -7,11 +7,11 @@ namespace capital_gains.Services
         private readonly ExecutionState _executionState;
         public PurchaseService(ExecutionState executionState) => _executionState = executionState;
 
-        public void Purchase(FinancyMarketOperation operation)
+        public void Purchase(FinancialMarketOperation operation)
         {
             _executionState.WeightedAverage = GetWeightedAverage(operation.Quantity, operation.UnitCost);
 
-            _executionState.PurchaseActions(operation.Quantity);
+            _executionState.Purchase(operation.Quantity);
         }
 
         private decimal GetWeightedAverage(long quantidadeAcoesCompradas, decimal valorCompra)

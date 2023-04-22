@@ -6,11 +6,11 @@
         public decimal WeightedAverage { get; set; }
         public long CurrentQuantity { get; private set; }
 
-        public bool HasLoss() => ActualProfit < 0;
+        public bool HasLossToDeduct() => ActualProfit < 0;
 
         public void SetProfit(decimal profit) => ActualProfit += profit;
 
-        public void SellActions(long quantity)
+        public void Sell(long quantity)
         {
             CurrentQuantity -= quantity;
 
@@ -18,6 +18,8 @@
                 ActualProfit = decimal.Zero;
         }
 
-        public void PurchaseActions(long quantity) => CurrentQuantity += quantity;
+        public void Purchase(long quantity) => CurrentQuantity += quantity;
+
+        public void DeductTax(decimal tax) => ActualProfit -= tax;
     }
 }

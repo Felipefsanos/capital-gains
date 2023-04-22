@@ -7,7 +7,7 @@ string? input = Console.ReadLine();
 
 while (input != null)
 {
-    var financyOperations = JsonSerializer.Deserialize<IEnumerable<FinancyMarketOperation>>(input);
+    var financyOperations = JsonSerializer.Deserialize<IEnumerable<FinancialMarketOperation>>(input);
 
     var outoputService = new OutputService();
 
