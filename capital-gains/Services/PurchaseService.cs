@@ -1,11 +1,12 @@
 ﻿using capital_gains.Entities;
+using capital_gains.Services.Abstractions;
 
 namespace capital_gains.Services
 {
-    public class PurchaseService
+    public class PurchaseService : IPurchaseService
     {
-        private readonly ExecutionState _executionState;
-        public PurchaseService(ExecutionState executionState) => _executionState = executionState;
+        private readonly BatchExecutionState _executionState;
+        public PurchaseService(BatchExecutionState executionState) => _executionState = executionState;
 
         public void Purchase(FinancialMarketOperation operation)
         {
@@ -14,10 +15,10 @@ namespace capital_gains.Services
             _executionState.Purchase(operation.Quantity);
         }
 
-        private decimal GetWeightedAverage(long quantidadeAcoesCompradas, decimal valorCompra)
+        private decimal GetWeightedAverage(long numberPurchased, decimal purchaseValue)
         {
-            var resultado = (_executionState.CurrentQuantity * _executionState.WeightedAverage) + (quantidadeAcoesCompradas * valorCompra);
-            var totalAcoes = _executionState.CurrentQuantity + quantidadeAcoesCompradas;
+            var resultado = (_executionState.CurrentQuantity * _executionState.WeightedAverage) + (numberPurchased * purchaseValue);
+            var totalAcoes = _executionState.CurrentQuantity + numberPurchased;
 
             return Math.Round(resultado / totalAcoes, 2);
         }

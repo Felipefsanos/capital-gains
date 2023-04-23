@@ -1,12 +1,12 @@
 ﻿namespace capital_gains.Entities
 {
-    public class ExecutionState
+    public class BatchExecutionState
     {
         public decimal ActualProfit { get; private set; }
         public decimal WeightedAverage { get; set; }
         public long CurrentQuantity { get; private set; }
 
-        public bool HasLossToDeduct() => ActualProfit < 0;
+        public bool HasLoss() => ActualProfit < 0;
 
         public void SetProfit(decimal profit) => ActualProfit += profit;
 

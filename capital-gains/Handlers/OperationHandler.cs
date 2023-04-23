@@ -1,19 +1,19 @@
 ﻿using capital_gains.Entities;
-using capital_gains.Services;
+using capital_gains.Handlers.Abstractions;
+using capital_gains.Services.Abstractions;
 
 namespace capital_gains.Handlers
 {
-    public class OperationHandler
+    public class OperationHandler : IOperationHandler
     {
-        private readonly PurchaseService _purchaseService;
-        private readonly SaleService _saleService;
-        private readonly OutputService _outputService;
+        private readonly IPurchaseService _purchaseService;
+        private readonly ISaleService _saleService;
+        private readonly IOutputService _outputService;
 
-        public OperationHandler(OutputService outputService)
+        public OperationHandler(IOutputService outputService, ISaleService saleService, IPurchaseService purchaseService)
         {
-            var executionState = new ExecutionState();
-            _purchaseService = new PurchaseService(executionState);
-            _saleService = new SaleService(executionState);
+            _purchaseService = purchaseService;
+            _saleService = saleService;
             _outputService = outputService;
         }
 

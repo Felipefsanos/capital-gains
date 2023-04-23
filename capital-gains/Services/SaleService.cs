@@ -1,66 +1,47 @@
 ﻿using capital_gains.Entities;
+using capital_gains.Services.Abstractions;
 
 namespace capital_gains.Services
 {
-    public class SaleService
+    public class SaleService : ISaleService
     {
-        private readonly ExecutionState _executionState;
-        public SaleService(ExecutionState executionState) => _executionState = executionState;
+        private readonly BatchExecutionState _batchOperationState;
+        public SaleService(BatchExecutionState batchOperationState) => _batchOperationState = batchOperationState;
         public decimal Sell(FinancialMarketOperation operation)
         {
-            var tax = GetTax(operation);
+            var operationProfit = GetProfitFromOperation(operation);
+            var profit = GetProfitToTax(operationProfit);
+            _batchOperationState.SetProfit(operationProfit);
 
-            _executionState.Sell(operation.Quantity);
+            var tax = GetTax(operation, profit);
+            _batchOperationState.DeductTax(tax);
 
+            _batchOperationState.Sell(operation.Quantity);
             return tax;
         }
 
-        private decimal GetTax(FinancialMarketOperation operation)
+        private decimal GetTax(FinancialMarketOperation operation, decimal profit)
         {
-            if (operation.UnitCost == _executionState.WeightedAverage)
-            {
+            if (operation.UnitCost <= _batchOperationState.WeightedAverage)
                 return 0.00m;
-            }
 
-            var profitOperation = GetProfitOperation(operation);
-
-            if (operation.UnitCost < _executionState.WeightedAverage)
-            {
-                _executionState.SetProfit(profitOperation);
+            if (!operation.ShouldPayTax())
                 return 0.00m;
-            }
 
-            if (!operation.PayTax())
-            {
+            if (_batchOperationState.HasLoss())
                 return 0.00m;
-            }
 
-            return GetOperationProfitTax(profitOperation);
+            return profit * 0.2M;
         }
 
-        private decimal GetOperationProfitTax(decimal profitOperation)
+        private decimal GetProfitToTax(decimal operationProfit) 
         {
-            decimal tax = 0.00m;
+            if (_batchOperationState.HasLoss())
+                return _batchOperationState.ActualProfit + operationProfit;
 
-            if (_executionState.HasLossToDeduct())
-            {
-                _executionState.SetProfit(profitOperation);
-
-                if (_executionState.ActualProfit > 0)
-                    tax = ApplyTax(_executionState.ActualProfit);
-            }
-            else
-            {
-                tax = ApplyTax(profitOperation);
-
-                _executionState.SetProfit(profitOperation - tax);
-            }
-
-            return tax;
+            return operationProfit;
         }
 
-        private decimal GetProfitOperation(FinancialMarketOperation operation) => operation.Quantity * (operation.UnitCost - _executionState.WeightedAverage);
-
-        private static decimal ApplyTax(decimal profitOperation) => 0.2M * profitOperation;
+        private decimal GetProfitFromOperation(FinancialMarketOperation operation) => operation.Quantity * (operation.UnitCost - _batchOperationState.WeightedAverage);
     }
 }

@@ -1,9 +1,10 @@
 ﻿using capital_gains.Entities;
+using capital_gains.Services.Abstractions;
 using System.Text.Json;
 
 namespace capital_gains.Services
 {
-    public class OutputService
+    public class OutputService : IOutputService
     {
         public List<TaxResponseModel> Taxes { get; set; } = new List<TaxResponseModel>();
 

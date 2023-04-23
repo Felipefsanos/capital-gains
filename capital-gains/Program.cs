@@ -9,16 +9,19 @@ while (input != null)
 {
     var financyOperations = JsonSerializer.Deserialize<IEnumerable<FinancialMarketOperation>>(input);
 
-    var outoputService = new OutputService();
+    var batchExecutionState = new BatchExecutionState();
+    var outputService = new OutputService();
+    var saleService = new SaleService(batchExecutionState);
+    var purchaseService = new PurchaseService(batchExecutionState);
 
-    var handler = new OperationHandler(outoputService);
+    var handler = new OperationHandler(outputService, saleService, purchaseService);
 
     foreach (var financyOperation in financyOperations!)
     {
         handler.Handle(financyOperation);
     }
 
-    Console.WriteLine(outoputService.GetProgramOutput());
+    Console.WriteLine(outputService.GetProgramOutput());
 
     input = Console.ReadLine();
 }

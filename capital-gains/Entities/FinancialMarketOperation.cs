@@ -11,6 +11,6 @@ namespace capital_gains.Entities
         [JsonPropertyName("quantity")]
         public long Quantity { get; set; }
 
-        public bool PayTax() => UnitCost * Quantity > 20000;
+        public bool ShouldPayTax() => UnitCost * Quantity > 20000;
     }
 }
